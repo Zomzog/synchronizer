@@ -1,31 +1,91 @@
-package bzh.zomzog
+package bzh.zomzog.synchronizer
 
-import bzh.zomzog.synchronizer.web.widget
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.content.*
-import io.ktor.http.content.*
-import io.ktor.gson.*
-import io.ktor.features.*
-import io.ktor.locations.*
+import bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.web.KodeinController
+import bzh.zomzog.synchronizer.service.DatabaseFactory
+import bzh.zomzog.synchronizer.service.WidgetService
+import bzh.zomzog.synchronizer.web.WidgetController
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import io.ktor.application.Application
+import io.ktor.application.install
+import io.ktor.features.CallLogging
+import io.ktor.features.ContentNegotiation
+import io.ktor.features.DefaultHeaders
+import io.ktor.jackson.jackson
+import io.ktor.locations.Locations
+import io.ktor.routing.routing
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import io.ktor.websocket.WebSockets
+import org.kodein.di.Instance
+import org.kodein.di.Kodein
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.singleton
+import org.kodein.di.jvmType
 
-fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
+fun Application.module(
+    kodeinMapper: Kodein.MainBuilder.(Application) -> Unit = {}
+) {
 
-@Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
-fun Application.module(testing: Boolean = false) {
+    val application = this
+
     install(DefaultHeaders) {
         header("X-Engine", "Ktor") // will send this header with each response
     }
     install(CallLogging)
+    install(WebSockets)
     install(ContentNegotiation) {
-        gson {
+        jackson {
+            configure(SerializationFeature.INDENT_OUTPUT, true)
         }
     }
-    install(Routing) {
-        widget(WidgetService())
+    install(Locations)
+
+    DatabaseFactory.init()
+
+    /**
+     * Creates a [Kodein] instance, binding the [Application] instance.
+     * Also calls the [kodeInMapper] to map the Controller dependencies.
+     */
+    val kodein = Kodein {
+        bind<Application>() with instance(application)
+        kodeinMapper(this, application)
     }
+
+    /**
+     * Detects all the registered [KodeinController] and registers its routes.
+     */
+    routing {
+        for (bind in kodein.container.tree.bindings) {
+            val bindClass = bind.key.type.jvmType as? Class<*>?
+            if (bindClass != null && KodeinController::class.java.isAssignableFrom(bindClass)) {
+                val res by kodein.Instance(bind.key.type)
+                println("Registering '$res' routes...")
+                (res as KodeinController).apply { registerRoutes() }
+            }
+        }
+    }
+}
+
+fun main(args: Array<String>) {
+    embeddedServer(Netty, port = 8888) {
+        module { application ->
+            bindSingleton { WidgetService() }
+            bindSingleton { WidgetController(it) }
+            bindSingleton {
+                jacksonObjectMapper().apply {
+                    setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                }
+            }
+        }
+    }.start(wait = true)
+}
+
+/**
+ * Shortcut for binding singletons to the same type.
+ */
+inline fun <reified T : Any> Kodein.MainBuilder.bindSingleton(crossinline callback: (Kodein) -> T) {
+    bind<T>() with singleton { callback(this@singleton.kodein) }
 }

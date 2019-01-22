@@ -1,15 +1,17 @@
 package bzh.zomzog.synchronizer.service
 
+import bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.domain.ChangeType
+import bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.domain.Notification
+import bzh.zomzog.synchronizer.domain.NewWidget
 import bzh.zomzog.synchronizer.domain.Widget
 import bzh.zomzog.synchronizer.domain.Widgets
 import bzh.zomzog.synchronizer.service.DatabaseFactory.dbQuery
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 
 /**
  * Created by Zomzog on 30/12/2018.
  */
-object WidgetService {
+class WidgetService {
 
     private val listeners = mutableMapOf<Int, suspend (Notification<Widget?>) -> Unit>()
 
