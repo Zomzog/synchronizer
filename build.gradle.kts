@@ -15,6 +15,7 @@ val logback_version: String by project
 plugins {
     application
     kotlin("jvm") version "1.3.10"
+    jacoco
 }
 
 group = "synchronizer"
@@ -59,15 +60,29 @@ dependencies {
     testCompile("org.assertj:assertj-core:3.11.1")
     testCompile("io.rest-assured:rest-assured:3.2.0")
     testCompile("org.junit.jupiter:junit-jupiter-api:5.3.2")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.2")
 }
-
-kotlin.sourceSets["main"].kotlin.srcDirs("src")
-kotlin.sourceSets["test"].kotlin.srcDirs("test")
-
-sourceSets["main"].resources.srcDirs("resources")
-sourceSets["test"].resources.srcDirs("testresources")
 
 // compile bytecode to java 8 (default is java 6)
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+jacoco {
+    toolVersion = "0.8.2"
+}
+
+tasks.withType<JacocoReport> {
+    reports {
+        xml.apply {
+            isEnabled = true
+        }
+        html.apply {
+            isEnabled = false
+        }
+    }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

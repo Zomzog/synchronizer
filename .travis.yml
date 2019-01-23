@@ -4,6 +4,13 @@ jdk:
   - oraclejdk9
   - openjdk8
 
+script:
+  - ./gradlew check
+  - ./gradlew jacocoTestReport
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
 notifications:
   slack:
     secure: ehCoYQv/XKtxKU3xXlBvRGyffStRAHu2RGeHJ6j14TtVXKvwjA14EoCFzax7McKN2fG2elz0dyFNpxfTSZKTaPrT/jGTJOjU5eYuelhKD3Fl2Cpe7iVDBNO6Pzon36L64VNF6N+hdxTTsCRjv6ClNTJJUngQAvS0asHZQ75CHvyr7JJuPRlDD8XWcJ9yfy4CwtouiYTx62WOBGQ2G/8Hrp+K84ptUMThA2V9hoRvvBrigMaQog1uhyHwAscj2I9UPtGo9g2xjiwjgdQi2qFOWxWFuSk1lWvdfJ82rftDFnipmXUFQoAKeRNK4NtUL0gp8NwPoRwC8eFD9x5m2NQi9Ydt7Oaxhdv9su92UJV1LJjANLo0wS3hjsjS4elE9FEJhj7OoO6f/hz9EDmKxzliCf7g1oDAr167//jwa3z/dZvv5GB1xqvqriqxvXCfsENZwadr+Am9BirnJfoYuLebmneFC+A8GhdvE4sX48/fwKLHGerqaJ5CZBmouyOZOmOQAcDIZzamWSP7InB2cfrRzOIXYkyKcOEAdrMQwNsYkB0p/5ixj14pBgji8mBANRLu8KOam+118MAQPgnlxlg0HIPscwTteLKJFn/EWyiL9O0vhO3ugXkoixdAcizHFLtVOxXrsJyzt6SQwTQCi+DOkG8vT/nOnUHSrPS5F74plIQ=
