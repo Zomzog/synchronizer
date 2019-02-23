@@ -4,7 +4,12 @@ import bzh.zomzog.synchronizer.product.domain.NewProduct
 import bzh.zomzog.synchronizer.product.domain.Product
 import bzh.zomzog.synchronizer.product.domain.ProductTable
 import bzh.zomzog.synchronizer.service.DatabaseFactory.dbQuery
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.update
 
 class ProductRepository {
 

@@ -1,13 +1,18 @@
 package bzh.zomzog.synchronizer.product.web
 
 import bzh.zomzog.synchronizer.product.domain.NewProduct
+import bzh.zomzog.synchronizer.product.repository.ProductRepository
 import bzh.zomzog.synchronizer.product.service.ProductService
 import bzh.zomzog.synchronizer.web.KodeinController
 import bzh.zomzog.synchronizer.web.TypedRoute
-import bzh.zomzog.synchronizer.product.repository.ProductRepository
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
-import io.ktor.locations.*
+import io.ktor.locations.KtorExperimentalLocationsAPI
+import io.ktor.locations.Location
+import io.ktor.locations.delete
+import io.ktor.locations.get
+import io.ktor.locations.post
+import io.ktor.locations.put
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Routing

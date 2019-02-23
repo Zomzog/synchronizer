@@ -1,7 +1,12 @@
 package bzh.zomzog.synchronizer.etsy.repository
 
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.containsAll
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNotEqualTo
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
 import bzh.zomzog.synchronizer.etsy.domain.NewProductEtsy
 import bzh.zomzog.synchronizer.etsy.domain.ProductEtsy
 import bzh.zomzog.synchronizer.etsy.domain.ProductEtsyEntity
@@ -11,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -89,6 +95,7 @@ internal class ProductEtsyRepositoryTest {
             val expected = ProductEtsy(existing.id.value, 1, "pony", 3, 2, "href")
             assertThat(result).isNotNull().isEqualTo(expected)
         }
+
         @Test
         fun `get non existing product`() {
             val result = runBlocking {
@@ -96,6 +103,7 @@ internal class ProductEtsyRepositoryTest {
             }
             assertThat(result).isNull()
         }
+
         @Test
         fun `get one by etsyId`() {
             val existing = transaction {
@@ -113,7 +121,16 @@ internal class ProductEtsyRepositoryTest {
             val expected = ProductEtsy(existing.id.value, 99, "pony", 3, 2, "href")
             assertThat(result).isNotNull().isEqualTo(expected)
         }
+
+        @Test
+        fun `get non existing  by etsyId`() {
+            val result = runBlocking {
+                repository.getOneByEtsyId(99)
+            }
+            assertThat(result).isNull()
+        }
     }
+
     @Nested
     inner class Update {
 
@@ -138,8 +155,9 @@ internal class ProductEtsyRepositoryTest {
                 ProductEtsy(existing.id.value, 10, "Rainbow Dash", 0, result.dateUpdated, "https;//zomzog.fr")
             assertThat(result).isEqualTo(expected)
         }
+
         @Test
-        fun `update non existing product create a new one`() {
+        fun `update product without id create a new one`() {
             val update = NewProductEtsy(null, 10, "Rainbow Dash", 0, "https;//zomzog.fr")
 
             val result = runBlocking {
@@ -149,7 +167,19 @@ internal class ProductEtsyRepositoryTest {
                 ProductEtsy(result.id, 10, "Rainbow Dash", 0, result.dateUpdated, "https;//zomzog.fr")
             assertThat(result).isEqualTo(expected)
         }
+
+        @Test
+        fun `update non existing product throw exception`() {
+            val update = NewProductEtsy(9, 10, "Rainbow Dash", 0, "https;//zomzog.fr")
+
+            assertThrows(Exception::class.java) {
+                runBlocking {
+                    repository.update(update)
+                }
+            }
+        }
     }
+
     @Nested
     inner class Add {
         @Test
@@ -160,6 +190,7 @@ internal class ProductEtsyRepositoryTest {
                 assertThat(saved.id).isNotNull()
             }
         }
+
         @Test
         fun `add ignore product id`() {
             runBlocking {

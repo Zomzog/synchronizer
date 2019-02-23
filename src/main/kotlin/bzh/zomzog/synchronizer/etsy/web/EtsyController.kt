@@ -4,7 +4,6 @@ import bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.etsy.service.EtsyService
 import bzh.zomzog.synchronizer.web.KodeinController
 import bzh.zomzog.synchronizer.web.TypedRoute
 import io.ktor.application.call
-import io.ktor.client.request.get
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
 import io.ktor.locations.get

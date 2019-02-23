@@ -1,8 +1,9 @@
 language: java
 jdk:
   - oraclejdk8
-  - oraclejdk9
   - openjdk8
+  - oraclejdk9
+  - oraclejdk11
 
 script:
   - ./gradlew check
@@ -10,6 +11,7 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - ./gradlew coveralls
 
 notifications:
   slack:
