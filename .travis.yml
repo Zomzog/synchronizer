@@ -20,7 +20,7 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - sonar-scanner
+  - ./gradlew sonarqube
 
 notifications:
   slack:

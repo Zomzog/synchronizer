@@ -16,7 +16,7 @@ plugins {
     application
     kotlin("jvm") version "1.3.10"
     jacoco
-    id("com.github.kt3k.coveralls") version "2.8.2"
+    id("org.sonarqube") version "2.2"
    // id("org.jmailen.kotlinter") version "1.21.0"
 }
 
