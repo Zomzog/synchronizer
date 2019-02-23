@@ -5,13 +5,22 @@ jdk:
   - oraclejdk9
   - oraclejdk11
 
+addons:
+  sonarcloud:
+    organization: "zomzog-github"
+    token:
+      secure: $SONAR_TOKEN
+    branches:
+      - develop
+      - master
+
 script:
   - ./gradlew check
   - ./gradlew jacocoTestReport
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - ./gradlew coveralls
+  - sonar-scanner
 
 notifications:
   slack:
