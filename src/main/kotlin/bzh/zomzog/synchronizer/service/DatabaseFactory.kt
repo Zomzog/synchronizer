@@ -1,6 +1,5 @@
 package bzh.zomzog.synchronizer.service
 
-
 import bzh.zomzog.synchronizer.etsy.domain.ProductEtsyTable
 import bzh.zomzog.synchronizer.product.domain.ProductTable
 import com.zaxxer.hikari.HikariConfig

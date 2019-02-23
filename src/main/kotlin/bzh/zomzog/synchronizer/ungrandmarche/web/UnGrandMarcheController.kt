@@ -15,17 +15,14 @@ import org.kodein.di.generic.instance
 @KtorExperimentalLocationsAPI
 class UnGrandMarcheController(kodein: Kodein) : KodeinController(kodein) {
 
-    val ungrandmarcherScraper : UnGrandMarcheScraper by instance()
+    val ungrandmarcherScraper: UnGrandMarcheScraper by instance()
 
     override fun Routing.registerRoutes() {
 
         get<UnGrandMarcheController.Routes.UnGrandMarche> {
             call.respond(ungrandmarcherScraper.listAllProduct())
         }
-
     }
-
-
 
     /**
      * A class containing routes annotated with [Location] and implementing [TypedRoute].
@@ -36,7 +33,5 @@ class UnGrandMarcheController(kodein: Kodein) : KodeinController(kodein) {
          */
         @Location("/unGrandMarche")
         class UnGrandMarche : TypedRoute
-
     }
 }
-

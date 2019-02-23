@@ -22,4 +22,4 @@ data class NewProduct(
     val quantity: Int
 )
 
-data class DiffResult(val allUnGrandMarche : List<String>, val allEtsy : List<String>, val leftUnGrandMarche: List<String>, val leftEtsy: List<String>)
+data class DiffResult(val allUnGrandMarche: List<String>, val allEtsy: List<String>, val leftUnGrandMarche: List<String>, val leftEtsy: List<String>)

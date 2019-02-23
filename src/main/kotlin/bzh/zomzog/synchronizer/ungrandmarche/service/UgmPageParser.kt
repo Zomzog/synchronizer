@@ -8,7 +8,7 @@ import org.jsoup.select.Elements
 
 class UgmPageParser {
 
-    fun extractProductFromHtml(html: String) : List<NewProductUgm> {
+    fun extractProductFromHtml(html: String): List<NewProductUgm> {
         val productList: Elements? = Jsoup.parse(html)?.body()?.getElementsByAttributeValue("class", "product_list")
         return if (null == productList || productList.size != 1) {
             emptyList()

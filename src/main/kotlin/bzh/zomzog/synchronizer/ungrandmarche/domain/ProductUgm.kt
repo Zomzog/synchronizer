@@ -18,7 +18,6 @@ data class ProductUgm(
     val href: String
 )
 
-
 data class NewProductUgm(
     val id: Int?,
     val ugmId: Int,

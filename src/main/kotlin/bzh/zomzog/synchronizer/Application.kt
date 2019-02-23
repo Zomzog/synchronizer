@@ -97,7 +97,6 @@ fun main(args: Array<String>) {
     }.start(wait = true)
 }
 
-
 @KtorExperimentalLocationsAPI
 private fun Kodein.MainBuilder.bindProduct() {
     bindSingleton { ProductRepository() }

@@ -17,9 +17,9 @@ import org.kodein.di.generic.instance
 @KtorExperimentalLocationsAPI
 class ProductController(kodein: Kodein) : KodeinController(kodein) {
 
-    val productRepository : ProductRepository by instance()
+    val productRepository: ProductRepository by instance()
 
-    val productService : ProductService by instance()
+    val productService: ProductService by instance()
 
     override fun Routing.registerRoutes() {
 
@@ -35,7 +35,7 @@ class ProductController(kodein: Kodein) : KodeinController(kodein) {
         put<ProductController.Routes.Products> {
             val product = call.receive<NewProduct>()
             val updated = productRepository.update(product)
-            if(updated == null) call.respond(HttpStatusCode.NotFound)
+            if (updated == null) call.respond(HttpStatusCode.NotFound)
             else call.respond(HttpStatusCode.OK, updated)
         }
 
@@ -55,7 +55,6 @@ class ProductController(kodein: Kodein) : KodeinController(kodein) {
             call.respond(productService.diff())
         }
     }
-
 
     /**
      * A class containing routes annotated with [Location] and implementing [TypedRoute].

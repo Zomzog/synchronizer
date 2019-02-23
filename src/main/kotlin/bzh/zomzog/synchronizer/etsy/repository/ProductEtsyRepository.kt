@@ -17,8 +17,7 @@ class ProductEtsyRepository {
             ProductEtsyEntity.findById(id)
         }?.toProduct()
 
-
-    suspend fun getOneByEtsyId(etsyId: Int) : ProductEtsy? =
+    suspend fun getOneByEtsyId(etsyId: Int): ProductEtsy? =
         dbQuery {
             ProductEtsyEntity.find { ProductEtsyTable.etsyId eq etsyId }.firstOrNull()
         }?.toProduct()
@@ -30,7 +29,7 @@ class ProductEtsyRepository {
         } else {
             dbQuery {
                 val entity = ProductEtsyEntity.findById(id)
-                if ( null ==entity ) {
+                if (null == entity) {
                     throw Exception("Product not found")
                 } else {
                     entity.etsyId = product.etsyId
@@ -62,6 +61,4 @@ class ProductEtsyRepository {
             ProductEtsyEntity.findById(id)?.delete()
         }
     }
-
-
 }

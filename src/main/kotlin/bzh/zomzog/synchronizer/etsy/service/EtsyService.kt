@@ -7,7 +7,6 @@ import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.generic.instance
 
-
 class EtsyService(override val kodein: Kodein) : KodeinAware {
 
     val etsyRepository: ProductEtsyRepository by instance()

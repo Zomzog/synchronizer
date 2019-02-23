@@ -27,7 +27,6 @@ class ProductEtsyEntity(id: EntityID<Int>) : IntEntity(id) {
     }
 }
 
-
 data class ProductEtsy(
     val id: Int,
     val etsyId: Int,

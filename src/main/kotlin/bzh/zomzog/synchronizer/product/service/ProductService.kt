@@ -9,11 +9,11 @@ import org.kodein.di.generic.instance
 
 class ProductService(override val kodein: Kodein) : KodeinAware {
 
-    val etsyController : EtsyController by instance()
+    val etsyController: EtsyController by instance()
 
-    val unGrandMarcherScraper : UnGrandMarcheScraper by instance()
+    val unGrandMarcherScraper: UnGrandMarcheScraper by instance()
 
-    suspend fun diff() : DiffResult {
+    suspend fun diff(): DiffResult {
         val etsy = emptyList<String>()
         // val etsy = etsyController.updateFromEtsy()
         val ugm = unGrandMarcherScraper.listProduct(1)

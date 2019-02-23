@@ -9,10 +9,9 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.generic.instance
 import java.net.URL
 
-
 class UnGrandMarcheScraper(override val kodein: Kodein) : KodeinAware {
 
-    val parser : UgmPageParser by instance()
+    val parser: UgmPageParser by instance()
 
     suspend fun listAllProduct(): List<String> {
 
@@ -43,7 +42,5 @@ class UnGrandMarcheScraper(override val kodein: Kodein) : KodeinAware {
         client.close()
 
         return parser.extractProductFromHtml(html).map { it.name }
-
     }
-
 }

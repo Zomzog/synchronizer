@@ -15,10 +15,9 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.generic.instance
 import java.net.URL
 
-
 class EtsyClient(override val kodein: Kodein) : KodeinAware {
 
-    val properties : SynchronizerProperties by instance()
+    val properties: SynchronizerProperties by instance()
 
     suspend fun list(offset: Int, pageSize: Int = 100): PagedResult {
         val ETSY_API_KEY = properties.etsyApiKey
@@ -32,7 +31,7 @@ class EtsyClient(override val kodein: Kodein) : KodeinAware {
         }
 
         val result = client.get<PagedResult> {
-            url(URL("https://openapi.etsy.com/v2/shops/15485902/listings/active?api_key=${ETSY_API_KEY}&language=fr&limit=${pageSize}&offset=${offset}&sort_on=price&sort_order=up"))
+            url(URL("https://openapi.etsy.com/v2/shops/15485902/listings/active?api_key=$ETSY_API_KEY&language=fr&limit=$pageSize&offset=$offset&sort_on=price&sort_order=up"))
         }
 
         client.close()

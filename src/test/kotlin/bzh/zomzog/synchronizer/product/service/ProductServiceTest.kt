@@ -45,7 +45,7 @@ class ProductServiceTest {
 
     @Test
     fun `One common twice in only one list`() = runBlocking {
-        val etsy = listOf("prod1","prod1", "prod2")
+        val etsy = listOf("prod1", "prod1", "prod2")
         val ugm = listOf("prod1", "uprod2")
         val leftEtsy = listOf("prod1", "prod2")
         val leftugm = listOf("uprod2")
@@ -55,7 +55,7 @@ class ProductServiceTest {
         Unit
     }
 
-    fun algo(etsy : List<String>, ugm : List<String>) : DiffResult {
+    fun algo(etsy: List<String>, ugm: List<String>): DiffResult {
         val leftEtsy = etsy.toMutableList()
         val leftugm = ugm.toMutableList()
 
