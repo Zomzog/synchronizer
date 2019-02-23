@@ -1,6 +1,6 @@
 package bzh.zomzog.synchronizer.etsy.web
 
-import bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.etsy.service.EtsyService
+import bzh.zomzog.synchronizer.etsy.service.EtsyService
 import bzh.zomzog.synchronizer.web.KodeinController
 import bzh.zomzog.synchronizer.web.TypedRoute
 import io.ktor.application.call

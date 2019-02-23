@@ -2,8 +2,8 @@ package bzh.zomzog.synchronizer.etsy.service
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.etsy.service.EtsyClient
-import bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.etsy.service.EtsyService
+import bzh.zomzog.synchronizer.etsy.service.EtsyClient
+import bzh.zomzog.synchronizer.etsy.service.EtsyService
 import bzh.zomzog.synchronizer.etsy.domain.NewProductEtsy
 import bzh.zomzog.synchronizer.etsy.domain.ProductEtsy
 import bzh.zomzog.synchronizer.etsy.repository.ProductEtsyRepository

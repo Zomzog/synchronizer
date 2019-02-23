@@ -1,6 +1,6 @@
-package bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.etsy.service
+package bzh.zomzog.synchronizer.etsy.service
 
-import bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.config.SynchronizerProperties
+import bzh.zomzog.synchronizer.config.SynchronizerProperties
 import bzh.zomzog.synchronizer.etsy.domain.NewProductEtsy
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.DeserializationFeature

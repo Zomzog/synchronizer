@@ -1,6 +1,6 @@
 package bzh.zomzog.synchronizer
 
-import bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.config.SynchronizerProperties
+import bzh.zomzog.synchronizer.config.SynchronizerProperties
 import bzh.zomzog.synchronizer.etsy.web.EtsyController
 import bzh.zomzog.synchronizer.product.repository.ProductRepository
 import bzh.zomzog.synchronizer.product.service.ProductService

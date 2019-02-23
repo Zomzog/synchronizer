@@ -1,4 +1,4 @@
-package bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.etsy.service
+package bzh.zomzog.synchronizer.etsy.service
 
 import bzh.zomzog.synchronizer.etsy.domain.NewProductEtsy
 import bzh.zomzog.synchronizer.etsy.domain.ProductEtsy
