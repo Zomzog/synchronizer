@@ -40,12 +40,18 @@ dependencies {
     implementation("com.squareup.moshi:moshi:$moshi_version")
     implementation("com.squareup.moshi:moshi-adapters:$moshi_version")
 
+    compile("io.ktor:ktor-client-apache:$ktor_version")
+    compile("io.ktor:ktor-client-jackson:$ktor_version")
+    compile("io.ktor:ktor-client-json:$ktor_version")
+
     compile("io.ktor:ktor-server-netty:$ktor_version")
     compile("io.ktor:ktor-jackson:$ktor_version")
     compile("io.ktor:ktor-server-core:$ktor_version")
     compile("io.ktor:ktor-server-host-common:$ktor_version")
     compile("io.ktor:ktor-locations:$ktor_version")
     compile("io.ktor:ktor-websockets:$ktor_version")
+
+    compile("org.apache.commons:commons-text:1.6")
 
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
     compile("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
@@ -56,11 +62,16 @@ dependencies {
     compile("org.jetbrains.exposed:exposed:$exposed_version")
     compile("com.zaxxer:HikariCP:$hikaricp_version")
 
+    compile ("org.jsoup:jsoup:1.10.3")
+
     testCompile("io.ktor:ktor-server-tests:$ktor_version")
     testCompile("org.assertj:assertj-core:3.11.1")
+    testCompile("com.willowtreeapps.assertk:assertk-jvm:0.13")
     testCompile("io.rest-assured:rest-assured:3.2.0")
     testCompile("org.junit.jupiter:junit-jupiter-api:5.3.2")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.2")
+    testImplementation("io.mockk:mockk:1.9.1")
+
 }
 
 // compile bytecode to java 8 (default is java 6)

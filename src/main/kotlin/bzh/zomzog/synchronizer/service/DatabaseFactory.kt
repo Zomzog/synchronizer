@@ -1,14 +1,14 @@
 package bzh.zomzog.synchronizer.service
 
 
-import bzh.zomzog.synchronizer.domain.Widgets
+import bzh.zomzog.synchronizer.etsy.domain.ProductEtsyTable
+import bzh.zomzog.synchronizer.product.domain.ProductTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
@@ -21,17 +21,8 @@ object DatabaseFactory {
         // Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
         Database.connect(hikari())
         transaction {
-            create(Widgets)
-            Widgets.insert {
-                it[name] = "widget one"
-                it[quantity] = 27
-                it[dateUpdated] = System.currentTimeMillis()
-            }
-            Widgets.insert {
-                it[name] = "widget two"
-                it[quantity] = 14
-                it[dateUpdated] = System.currentTimeMillis()
-            }
+            create(ProductTable)
+            create(ProductEtsyTable)
         }
     }
 

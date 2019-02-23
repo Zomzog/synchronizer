@@ -1,9 +1,14 @@
 package bzh.zomzog.synchronizer
 
-import bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.web.KodeinController
+import bzh.zomzog.synchronizer.bzh.zomzog.synchronizer.config.SynchronizerProperties
+import bzh.zomzog.synchronizer.etsy.web.EtsyController
+import bzh.zomzog.synchronizer.product.repository.ProductRepository
+import bzh.zomzog.synchronizer.product.service.ProductService
+import bzh.zomzog.synchronizer.product.web.ProductController
 import bzh.zomzog.synchronizer.service.DatabaseFactory
-import bzh.zomzog.synchronizer.service.WidgetService
-import bzh.zomzog.synchronizer.web.WidgetController
+import bzh.zomzog.synchronizer.ungrandmarche.service.UnGrandMarcheScraper
+import bzh.zomzog.synchronizer.ungrandmarche.web.UnGrandMarcheController
+import bzh.zomzog.synchronizer.web.KodeinController
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -13,10 +18,12 @@ import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.jackson.jackson
+import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Locations
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.util.KtorExperimentalAPI
 import io.ktor.websocket.WebSockets
 import org.kodein.di.Instance
 import org.kodein.di.Kodein
@@ -25,6 +32,8 @@ import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
 import org.kodein.di.jvmType
 
+@KtorExperimentalAPI
+@KtorExperimentalLocationsAPI
 fun Application.module(
     kodeinMapper: Kodein.MainBuilder.(Application) -> Unit = {}
 ) {
@@ -45,12 +54,16 @@ fun Application.module(
 
     DatabaseFactory.init()
 
+    val etsyApiKey = environment.config.config("synchronizer").property("etsyApiKey").getString()
+    val properties = SynchronizerProperties(etsyApiKey)
+
     /**
      * Creates a [Kodein] instance, binding the [Application] instance.
      * Also calls the [kodeInMapper] to map the Controller dependencies.
      */
     val kodein = Kodein {
         bind<Application>() with instance(application)
+        bind<SynchronizerProperties>() with instance(properties)
         kodeinMapper(this, application)
     }
 
@@ -69,18 +82,46 @@ fun Application.module(
     }
 }
 
+@KtorExperimentalLocationsAPI
+@KtorExperimentalAPI
 fun main(args: Array<String>) {
+
     embeddedServer(Netty, port = 8888) {
-        module { application ->
-            bindSingleton { WidgetService() }
-            bindSingleton { WidgetController(it) }
-            bindSingleton {
-                jacksonObjectMapper().apply {
-                    setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                }
-            }
+        module {
+            bindJackson()
+
+            bindProduct()
+            bindUnGrandMarche()
+            bindEtsy()
         }
     }.start(wait = true)
+}
+
+
+@KtorExperimentalLocationsAPI
+private fun Kodein.MainBuilder.bindProduct() {
+    bindSingleton { ProductRepository() }
+    bindSingleton { ProductService(it) }
+    bindSingleton { ProductController(it) }
+}
+
+@KtorExperimentalLocationsAPI
+private fun Kodein.MainBuilder.bindUnGrandMarche() {
+    bindSingleton { UnGrandMarcheController(it) }
+    bindSingleton { UnGrandMarcheScraper(it) }
+}
+
+@KtorExperimentalLocationsAPI
+private fun Kodein.MainBuilder.bindEtsy() {
+    bindSingleton { EtsyController(it) }
+}
+
+private fun Kodein.MainBuilder.bindJackson() {
+    bindSingleton {
+        jacksonObjectMapper().apply {
+            setSerializationInclusion(JsonInclude.Include.NON_NULL)
+        }
+    }
 }
 
 /**
