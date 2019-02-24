@@ -1,6 +1,9 @@
 package bzh.zomzog.synchronizer
 
 import bzh.zomzog.synchronizer.config.SynchronizerProperties
+import bzh.zomzog.synchronizer.etsy.repository.ProductEtsyRepository
+import bzh.zomzog.synchronizer.etsy.service.EtsyClient
+import bzh.zomzog.synchronizer.etsy.service.EtsyService
 import bzh.zomzog.synchronizer.etsy.web.EtsyController
 import bzh.zomzog.synchronizer.product.repository.ProductRepository
 import bzh.zomzog.synchronizer.product.service.ProductService
@@ -18,12 +21,10 @@ import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.jackson.jackson
-import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Locations
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.util.KtorExperimentalAPI
 import io.ktor.websocket.WebSockets
 import org.kodein.di.Instance
 import org.kodein.di.Kodein
@@ -32,8 +33,6 @@ import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
 import org.kodein.di.jvmType
 
-@KtorExperimentalAPI
-@KtorExperimentalLocationsAPI
 fun Application.module(
     kodeinMapper: Kodein.MainBuilder.(Application) -> Unit = {}
 ) {
@@ -82,8 +81,6 @@ fun Application.module(
     }
 }
 
-@KtorExperimentalLocationsAPI
-@KtorExperimentalAPI
 fun main(args: Array<String>) {
 
     embeddedServer(Netty, port = 8888) {
@@ -97,22 +94,22 @@ fun main(args: Array<String>) {
     }.start(wait = true)
 }
 
-@KtorExperimentalLocationsAPI
 private fun Kodein.MainBuilder.bindProduct() {
     bindSingleton { ProductRepository() }
     bindSingleton { ProductService(it) }
     bindSingleton { ProductController(it) }
 }
 
-@KtorExperimentalLocationsAPI
 private fun Kodein.MainBuilder.bindUnGrandMarche() {
     bindSingleton { UnGrandMarcheController(it) }
     bindSingleton { UnGrandMarcheScraper(it) }
 }
 
-@KtorExperimentalLocationsAPI
 private fun Kodein.MainBuilder.bindEtsy() {
     bindSingleton { EtsyController(it) }
+    bindSingleton { EtsyService(it) }
+    bindSingleton { EtsyClient(it) }
+    bindSingleton { ProductEtsyRepository() }
 }
 
 private fun Kodein.MainBuilder.bindJackson() {

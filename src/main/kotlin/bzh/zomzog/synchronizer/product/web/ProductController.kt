@@ -7,7 +7,6 @@ import bzh.zomzog.synchronizer.web.KodeinController
 import bzh.zomzog.synchronizer.web.TypedRoute
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
-import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
 import io.ktor.locations.delete
 import io.ktor.locations.get
@@ -19,7 +18,6 @@ import io.ktor.routing.Routing
 import org.kodein.di.Kodein
 import org.kodein.di.generic.instance
 
-@KtorExperimentalLocationsAPI
 class ProductController(kodein: Kodein) : KodeinController(kodein) {
 
     val productRepository: ProductRepository by instance()

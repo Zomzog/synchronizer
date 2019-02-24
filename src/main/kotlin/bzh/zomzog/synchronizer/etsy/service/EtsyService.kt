@@ -41,4 +41,6 @@ class EtsyService(override val kodein: Kodein) : KodeinAware {
             etsyRepository.update(updated)
         }
     }
+
+    suspend fun list(): List<ProductEtsy> = etsyRepository.getAll()
 }
