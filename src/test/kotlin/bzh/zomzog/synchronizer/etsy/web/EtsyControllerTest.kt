@@ -51,7 +51,7 @@ internal class EtsyControllerTest {
     /**
      * Convenience method we use to configure a test application and to execute a [callback] block testing it.
      */
-    private fun testApp(callback: TestApplicationEngine.() -> Unit): Unit {
+    private fun testApp(callback: TestApplicationEngine.() -> Unit) {
             withTestApplication({
                 (environment.config as MapApplicationConfig).apply {
                     put("synchronizer.etsyApiKey", "pony")

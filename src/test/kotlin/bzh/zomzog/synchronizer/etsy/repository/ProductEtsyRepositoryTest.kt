@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test
 
 internal class ProductEtsyRepositoryTest {
 
-    val repository: ProductEtsyRepository = ProductEtsyRepository()
+    val repository = ProductEtsyRepository()
 
     @BeforeEach
     fun setUp() {

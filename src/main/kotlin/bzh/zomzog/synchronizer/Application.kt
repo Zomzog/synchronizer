@@ -11,18 +11,25 @@ import bzh.zomzog.synchronizer.product.web.ProductController
 import bzh.zomzog.synchronizer.service.DatabaseFactory
 import bzh.zomzog.synchronizer.ungrandmarche.service.UnGrandMarcheScraper
 import bzh.zomzog.synchronizer.ungrandmarche.web.UnGrandMarcheController
+import bzh.zomzog.synchronizer.web.HealthController
 import bzh.zomzog.synchronizer.web.KodeinController
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.application.Application
+import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.features.CORS
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
+import io.ktor.features.StatusPages
+import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
 import io.ktor.locations.Locations
+import io.ktor.response.respond
 import io.ktor.routing.routing
+import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.websocket.WebSockets
@@ -33,7 +40,7 @@ import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
 import org.kodein.di.jvmType
 
-fun Application.module(
+fun Application.kodeinApplication(
     kodeinMapper: Kodein.MainBuilder.(Application) -> Unit = {}
 ) {
 
@@ -49,12 +56,18 @@ fun Application.module(
             configure(SerializationFeature.INDENT_OUTPUT, true)
         }
     }
+    install(StatusPages) {
+        exception<Throwable> { cause ->
+            call.respond(HttpStatusCode.InternalServerError)
+        }
+    }
     install(Locations)
+    install(CORS) {
+        anyHost()
+    }
 
     DatabaseFactory.init()
 
-    val etsyApiKey = environment.config.config("synchronizer").property("etsyApiKey").getString()
-    val properties = SynchronizerProperties(etsyApiKey)
 
     /**
      * Creates a [Kodein] instance, binding the [Application] instance.
@@ -62,7 +75,7 @@ fun Application.module(
      */
     val kodein = Kodein {
         bind<Application>() with instance(application)
-        bind<SynchronizerProperties>() with instance(properties)
+
         kodeinMapper(this, application)
     }
 
@@ -83,9 +96,16 @@ fun Application.module(
 
 fun main(args: Array<String>) {
 
-    embeddedServer(Netty, port = 8888) {
-        module {
+    embeddedServer(Netty){
+        kodeinApplication {
+            application ->
+
+            val etsyApiKey = environment.config.config("synchronizer").property("etsyApiKey").getString()
+            val properties = SynchronizerProperties(etsyApiKey)
+
+            bind<SynchronizerProperties>() with instance(properties)
             bindJackson()
+            bindActuator()
 
             bindProduct()
             bindUnGrandMarche()
@@ -118,6 +138,10 @@ private fun Kodein.MainBuilder.bindJackson() {
             setSerializationInclusion(JsonInclude.Include.NON_NULL)
         }
     }
+}
+
+private fun Kodein.MainBuilder.bindActuator() {
+    bindSingleton { HealthController(it) }
 }
 
 /**

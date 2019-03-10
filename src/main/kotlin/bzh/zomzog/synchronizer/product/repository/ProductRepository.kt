@@ -1,28 +1,23 @@
 package bzh.zomzog.synchronizer.product.repository
 
+import bzh.zomzog.synchronizer.etsy.domain.ProductEtsyEntity
 import bzh.zomzog.synchronizer.product.domain.NewProduct
 import bzh.zomzog.synchronizer.product.domain.Product
+import bzh.zomzog.synchronizer.product.domain.ProductEntity
 import bzh.zomzog.synchronizer.product.domain.ProductTable
 import bzh.zomzog.synchronizer.service.DatabaseFactory.dbQuery
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.update
 
 class ProductRepository {
 
     suspend fun getAll(): List<Product> = dbQuery {
-        ProductTable.selectAll().map { toProduct(it) }
+        ProductEntity.all().map { it.toProduct() }
     }
 
-    suspend fun getOne(id: Int): Product? = dbQuery {
-        ProductTable.select {
-            (ProductTable.id eq id)
-        }.mapNotNull { toProduct(it) }
-            .singleOrNull()
-    }
+    suspend fun getOne(id: Int): Product? =
+        dbQuery {
+            ProductEntity.findById(id)
+        }?.toProduct()
 
     suspend fun update(product: NewProduct): Product? {
         val id = product.id
@@ -30,26 +25,38 @@ class ProductRepository {
             add(product)
         } else {
             dbQuery {
-                ProductTable.update({ ProductTable.id eq id }) {
-                    it[name] = product.name
-                    it[quantity] = product.quantity
-                    it[dateUpdated] = System.currentTimeMillis()
+                val entity = ProductEntity.findById(id)
+                if (null == entity) {
+                    throw Exception("Product not found")
+                } else {
+                    entity.name = product.name
+                    val etsyProduct = getEtsyProduct(product.etsyId)
+                    entity.etsyProduct = etsyProduct
+                    entity.quantity = product.quantity
+                    entity.dateUpdated = System.currentTimeMillis()
+                    entity.toProduct()
                 }
             }
-            getOne(id)
         }
     }
 
     suspend fun add(product: NewProduct): Product {
-        var key = 0
-        dbQuery {
-            key = (ProductTable.insert {
-                it[name] = product.name
-                it[quantity] = product.quantity
-                it[dateUpdated] = System.currentTimeMillis()
-            } get ProductTable.id)!!
+        return dbQuery {
+            val ep = getEtsyProduct(product.etsyId)
+            val saved = ProductEntity.new {
+                etsyProduct = ep
+                name = product.name
+                quantity = product.quantity
+                dateUpdated = System.currentTimeMillis()
+            }
+            saved.toProduct()
         }
-        return getOne(key)!!
+    }
+
+    fun getEtsyProduct(etsyId: Int?): ProductEtsyEntity? {
+        return if (etsyId != null) {
+            ProductEtsyEntity.findById(etsyId) ?: throw IllegalArgumentException("Etsy product not found")
+        } else null
     }
 
     suspend fun delete(id: Int): Boolean {
@@ -57,12 +64,4 @@ class ProductRepository {
             ProductTable.deleteWhere { ProductTable.id eq id } > 0
         }
     }
-
-    private fun toProduct(row: ResultRow): Product =
-        Product(
-            id = row[ProductTable.id],
-            name = row[ProductTable.name],
-            quantity = row[ProductTable.quantity],
-            dateUpdated = row[ProductTable.dateUpdated]
-        )
 }
