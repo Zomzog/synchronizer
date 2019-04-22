@@ -9,4 +9,3 @@ class SynchronizerApplication
 fun main(args: Array<String>) {
 	runApplication<SynchronizerApplication>(*args)
 }
-
