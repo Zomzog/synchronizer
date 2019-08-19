@@ -1,13 +1,19 @@
 package bzh.zomzog.synchronizer.service
 
 import bzh.zomzog.synchronizer.domain.Product
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Flux
 
+@FlowPreview
 @Service
 class ProductService {
-    fun list(): Flux<Product> {
-        TODO()
+    suspend fun list(): Flow<Product> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun findOne(): Product {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }

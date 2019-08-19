@@ -1,7 +1,25 @@
 package bzh.zomzog.synchronizer.repository
 
 import bzh.zomzog.synchronizer.domain.ProductEtsyMongo
-import org.bson.types.ObjectId
-import org.springframework.data.repository.reactive.ReactiveCrudRepository
+import kotlinx.coroutines.reactive.flow.asFlow
+import org.springframework.data.mongodb.core.ReactiveFluentMongoOperations
+import org.springframework.data.mongodb.core.awaitOne
+import org.springframework.data.mongodb.core.insert
+import org.springframework.data.mongodb.core.oneAndAwait
+import org.springframework.data.mongodb.core.query
+import org.springframework.data.mongodb.core.query.Query.query
+import org.springframework.data.mongodb.core.query.isEqualTo
+import org.springframework.data.mongodb.core.query.where
+import org.springframework.stereotype.Repository
 
-interface EtsyRepository : ReactiveCrudRepository<ProductEtsyMongo, ObjectId>
+@Repository
+class EtsyRepository(private val mongo: ReactiveFluentMongoOperations) {
+
+    suspend fun findAll() = mongo.query<ProductEtsyMongo>().all().asFlow()
+
+    suspend fun findByEtsyId(etsyId: Int) = mongo.query<ProductEtsyMongo>()
+        .matching(query(where(ProductEtsyMongo::etsyId).isEqualTo(etsyId))).awaitOne()
+
+    suspend fun save(productEtsyMongo: ProductEtsyMongo) = mongo.insert<ProductEtsyMongo>().oneAndAwait(productEtsyMongo)
+
+}

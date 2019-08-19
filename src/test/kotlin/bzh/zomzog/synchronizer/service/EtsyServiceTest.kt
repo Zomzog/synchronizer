@@ -1,83 +1,83 @@
 package bzh.zomzog.synchronizer.service
 
 
-import assertk.assertThat
-import assertk.assertions.containsAll
-import assertk.assertions.isEmpty
-import assertk.assertions.isEqualTo
-//import bzh.zomzog.synchronizer.etsy.domain.NewProductEtsy
-//import bzh.zomzog.synchronizer.etsy.domain.ProductEtsy
-//import bzh.zomzog.synchronizer.etsy.repository.ProductEtsyRepository
-//import bzh.zomzog.synchronizer.etsy.utils.defaultProductEtsy
+import bzh.zomzog.synchronizer.domain.ProductEtsy
+import bzh.zomzog.synchronizer.domain.ProductEtsyMongo
+import bzh.zomzog.synchronizer.domain.productEtsyMongo
+import bzh.zomzog.synchronizer.repository.EtsyRepository
 import io.mockk.clearMocks
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import org.assertj.core.api.Assertions.assertThat
+import org.bson.types.ObjectId
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import reactor.core.publisher.Mono
 
 internal class EtsyServiceTest {
-//    val etsyRepository: ProductEtsyRepository = mockk()
-//
-//    val etsyClient: EtsyClient = mockk()
-//
-//    val etsyService = EtsyService()
-//
-//    @BeforeEach
-//    fun init() {
-//        clearMocks(etsyRepository, etsyClient)
-//    }
-//
-//
+    val etsyRepository: EtsyRepository = mockk()
+
+    val etsyClient: EtsyClient = mockk()
+
+    val etsyService = EtsyService(etsyClient, etsyRepository)
+
+    @BeforeEach
+    fun init() {
+        clearMocks(etsyRepository, etsyClient)
+    }
+
+
 //    @Nested
 //    inner class Pull {
+//
 //        @Test
 //        fun `pull from etsy`() {
-//            val dontCare: ProductEtsy = mockk()
+//            val dontCare: ProductEtsyMongo = mockk()
 //            listReturnTwoProducts()
 //            firstProductIsInDatabase()
 //            secondeProductNotInDatabase()
 //
-//            coEvery {
-//                etsyRepository.update(NewProductEtsy(42, 1337, "prod1", 42, "http://zomzog.fr"))
-//            } returns dontCare
-//            coEvery {
-//                etsyRepository.add(NewProductEtsy(null, 1, "prod2", 42, "http://zomzog.fr"))
-//            } returns dontCare
+//            every {
+//                etsyRepository.save(productEtsyMongo(etsyId = 1337, name="prod1"))
+//            } returns Mono.just(dontCare)
+//            every {
+//                etsyRepository.save(productEtsyMongo(etsyId = 1337, name="prod2"))
+//            } returns Mono.just(dontCare)
 //
-//            val pulled = runBlocking {
-//                etsyService.pullFromEtsy()
-//            }
+//            val pulled = etsyService.pullFromEtsy()
 //            assertThat(pulled).isEqualTo(2)
 //        }
 //
 //        private fun secondeProductNotInDatabase() {
-//            coEvery {
-//                etsyRepository.getOneByEtsyId(1)
-//            } returns null
+//            every {
+//                etsyRepository.findByEtsyId(1)
+//            } returns Mono.empty()
 //        }
 //
 //        private fun firstProductIsInDatabase() {
-//            coEvery {
-//                etsyRepository.getOneByEtsyId(1337)
-//            } returns ProductEtsy(42, 1337, "name", 3, 0, "href")
+//            every {
+//                etsyRepository.findByEtsyId(1337)
+//            } returns Mono.just(ProductEtsyMongo(ObjectId.get(), 1337, "name", 3, 0, "href"))
 //        }
 //
 //        private fun listReturnTwoProducts() {
-//            coEvery {
+//            every {
 //                etsyClient.list(any(), any())
 //            } returnsMany listOf(
+//                Mono.just(
 //                EtsyClient.PagedResult(
 //                    2,
 //                    listOf(defaultProduct(listing_id = 1337, title = "prod1"), defaultProduct(title = "prod2")),
 //                    EtsyClient.Pagination(1, 2, 1, 1)
-//                ),
+//                )),
 //
-//                EtsyClient.PagedResult(
+//                Mono.just(EtsyClient.PagedResult(
 //                    0,
 //                    emptyList(),
 //                    EtsyClient.Pagination(2, 2, 1, 1)
-//                )
+//                ))
 //            )
 //        }
 //
@@ -112,13 +112,13 @@ internal class EtsyServiceTest {
 //        }
 //    }
 //
-//    fun defaultProduct(
-//        listing_id: Int = 1,
-//        title: String = "title",
-//        description: String = "description",
-//        price: String = "1.5",
-//        url: String = "http://zomzog.fr",
-//        state: String = "active",
-//        quantity: Int = 42
-//    ) = EtsyClient.Result(listing_id, title, description, price, url, state, quantity)
+    fun defaultProduct(
+        listing_id: Int = 1,
+        title: String = "title",
+        description: String = "description",
+        price: String = "1.5",
+        url: String = "http://zomzog.fr",
+        state: String = "active",
+        quantity: Int = 42
+    ) = EtsyClient.Result(listing_id, title, description, price, url, state, quantity)
 }

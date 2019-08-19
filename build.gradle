@@ -1,8 +1,12 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.0.BUILD-SNAPSHOT'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.21'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.21'
+    id 'org.springframework.boot' version '2.2.0.M5'
+    id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+    //id 'org.springframework.boot' version '2.1.4.RELEASE'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.41'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.3.41'
     id 'jacoco'
+    id 'info.solidsoft.pitest' version '1.4.0'
+
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -15,15 +19,23 @@ repositories {
     mavenCentral()
     maven { url 'https://repo.spring.io/snapshot' }
     maven { url 'https://repo.spring.io/milestone' }
+    jcenter()
 }
 
 dependencies {
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
+
+    implementation 'com.squareup.moshi:moshi-kotlin:1.5.0'
+    implementation 'com.squareup.moshi:moshi-adapters:1.5.0'
+
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
@@ -34,7 +46,7 @@ dependencies {
     }
     testImplementation 'com.ninja-squad:springmockk:1.1.2'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.5.1'
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
 
     testCompile 'org.assertj:assertj-core:3.11.1'
     testCompile 'com.willowtreeapps.assertk:assertk-jvm:0.19'

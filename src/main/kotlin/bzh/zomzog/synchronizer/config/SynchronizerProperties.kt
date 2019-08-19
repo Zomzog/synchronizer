@@ -1,6 +1,10 @@
 package bzh.zomzog.synchronizer.config
 
-data class SynchronizerProperties(val etsyApiKey: String) {
+import org.springframework.boot.context.properties.ConfigurationProperties
 
+@ConfigurationProperties("synchronizer")
+class SynchronizerProperties {
+
+    lateinit var etsyApiKey: String
 
 }
