@@ -25,7 +25,6 @@ class ProductController(val productService: ProductService) {
     @FlowPreview
     @GetMapping("/{id}") @ResponseBody
     suspend fun findOne(@PathVariable id: String): Product {
-        println("id = [${id}]")
         return productService.findOne()
     }
 
