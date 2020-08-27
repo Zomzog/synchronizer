@@ -33,7 +33,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
 
-    implementation 'com.squareup.moshi:moshi-kotlin:1.8.0'
+    implementation 'com.squareup.moshi:moshi-kotlin:1.10.0'
     implementation 'com.squareup.moshi:moshi-adapters:1.8.0'
 
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
