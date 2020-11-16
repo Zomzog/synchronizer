@@ -44,7 +44,7 @@ dependencies {
         exclude module: 'junit'
         exclude module: 'mockito-core'
     }
-    testImplementation 'com.ninja-squad:springmockk:1.1.2'
+    testImplementation 'com.ninja-squad:springmockk:3.0.0'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.5.1'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
 
